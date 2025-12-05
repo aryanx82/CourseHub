@@ -100,7 +100,7 @@ export default function CoursesScreen() {
         renderItem={renderCourse}
         ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 120 }}
+        contentContainerStyle={{ paddingBottom: 60 }}
       />
     </SafeAreaView>
   );
