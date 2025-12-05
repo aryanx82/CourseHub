@@ -33,9 +33,6 @@ export default function HomeScreen() {
                 Discover Your Next{'\n'}Learning Adventure
               </Text>
             </View>
-            <TouchableOpacity style={styles.notificationBtn}>
-              <Ionicons name="notifications-outline" size={20} color="#fff" />
-            </TouchableOpacity>
           </View>
 
           <Text style={styles.heroSubtitle}>
@@ -66,23 +63,6 @@ export default function HomeScreen() {
               <View key={stat.label} style={styles.statPill}>
                 <Text style={styles.statNum}>{stat.value}</Text>
                 <Text style={styles.statLabel}>{stat.label}</Text>
-              </View>
-            ))}
-          </View>
-
-          <View style={styles.actionRow}>
-            <TouchableOpacity style={styles.primaryCTA}>
-              <Text style={styles.primaryCTAText}>Browse tracks</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.secondaryCTA}>
-              <Text style={styles.secondaryCTAText}>Get guidance</Text>
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.tagRow}>
-            {['Design', 'AI & Data', 'Marketing', 'Product'].map((tag) => (
-              <View key={tag} style={styles.tagChip}>
-                <Text style={styles.tagText}>{tag}</Text>
               </View>
             ))}
           </View>
@@ -185,62 +165,6 @@ const styles = StyleSheet.create({
   },
   statNum: { color: '#fff', fontWeight: '800', fontSize: 18 },
   statLabel: { color: '#EDEAFE', marginTop: 4, fontSize: 12 },
-  actionRow: {
-    flexDirection: 'row',
-    marginTop: 20,
-  },
-  primaryCTA: {
-    flex: 1,
-    backgroundColor: '#fff',
-    paddingVertical: 12,
-    borderRadius: 30,
-    marginRight: 10,
-  },
-  primaryCTAText: {
-    textAlign: 'center',
-    color: '#6C7BFF',
-    fontWeight: '700',
-  },
-  secondaryCTA: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: '#fff',
-    paddingVertical: 12,
-    borderRadius: 30,
-  },
-  secondaryCTAText: {
-    textAlign: 'center',
-    color: '#fff',
-    fontWeight: '700',
-  },
-  tagRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    marginTop: 18,
-  },
-  tagChip: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255,255,255,0.15)',
-    marginRight: 8,
-    marginBottom: 8,
-  },
-  tagText: {
-    color: '#fff',
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  notificationBtn: {
-    width: 42,
-    height: 42,
-    borderRadius: 21,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.5)',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(255,255,255,0.1)',
-  },
   sectionWrapper: {
     paddingTop: 18,
     paddingBottom: 4,
