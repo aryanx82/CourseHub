@@ -92,7 +92,7 @@ export default function HomeScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
           paddingBottom: 100,
-          paddingHorizontal: 18,
+          paddingHorizontal: 20,
         }}
       />
     </View>
@@ -102,12 +102,14 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   heroFullWidth: {
     width: '100%',
-    paddingTop: 70,
-    paddingBottom: 60,
+    paddingTop: 64,
+    paddingBottom: 40,
     alignItems: 'center',
+    borderBottomLeftRadius: 32,
+    borderBottomRightRadius: 32,
   },
   heroContent: {
-    width: '92%',
+    width: '94%',
   },
   heroHeader: {
     flexDirection: 'row',
@@ -131,7 +133,7 @@ const styles = StyleSheet.create({
     color: '#EDEAFE',
     fontSize: 15,
     lineHeight: 22,
-    marginBottom: 26,
+    marginBottom: 22,
   },
   searchRow: {
     flexDirection: 'row',
@@ -155,7 +157,7 @@ const styles = StyleSheet.create({
   statsRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 12,
+    marginTop: 16,
   },
   statPill: {
     flex: 1,
@@ -225,13 +227,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.1)',
   },
   sectionWrapper: {
-    paddingTop: 20,
-    paddingBottom: 10,
+    paddingTop: 18,
+    paddingBottom: 4,
   },
   sectionTitle: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: '800',
-    textAlign: 'center',
+    textAlign: 'left',
   },
 });
 
