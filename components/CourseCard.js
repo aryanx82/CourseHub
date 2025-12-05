@@ -70,8 +70,14 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: '700',
   },
-  cardTitle: { fontWeight: '800', fontSize: 16 },
-  cardSubtitle: { color: '#666', marginTop: 5 },
+  cardTitle: { 
+    fontWeight: '800',
+    fontSize: 16 
+  },
+  cardSubtitle: { 
+    color: '#666', 
+    marginTop: 5 
+  },
   cardFooter: {
     marginTop: 10,
     flexDirection: 'row',
