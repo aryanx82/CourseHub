@@ -1,8 +1,16 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { useBookmarks } from '../context/BookmarksContext';
 
 export default function CourseCard({ course }) {
+  const { isBookmarked, toggleBookmark } = useBookmarks();
+  const bookmarked = isBookmarked(course.id);
+
+  const handleToggle = () => {
+    toggleBookmark(course.id);
+  };
+
   return (
     <View style={styles.cardContainer}>
       <Image source={{ uri: course.image }} style={styles.cardImage} />
@@ -21,8 +29,12 @@ export default function CourseCard({ course }) {
             <Text style={styles.ratingText}>{course.rating}</Text>
           </View>
 
-          <TouchableOpacity style={styles.bookmarkBtn}>
-            <MaterialIcons name="bookmark-border" size={20} color="#333" />
+          <TouchableOpacity style={styles.bookmarkBtn} onPress={handleToggle}>
+            <MaterialIcons
+              name={bookmarked ? 'bookmark' : 'bookmark-border'}
+              size={20}
+              color={bookmarked ? '#6C7BFF' : '#333'}
+            />
           </TouchableOpacity>
         </View>
       </View>

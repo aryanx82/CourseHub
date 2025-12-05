@@ -1,17 +1,30 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { useRoute } from '@react-navigation/native';
+import { useBookmarks } from '../context/BookmarksContext';
 import { COURSES } from '../data/courses';
 
 const FILTERS = ['All', 'Development', 'Design', 'Data', 'Business', 'Marketing', 'AI'];
 
 export default function CoursesScreen() {
+  const route = useRoute();
+  const { isBookmarked, toggleBookmark } = useBookmarks();
+
   const [activeFilter, setActiveFilter] = useState('All');
 
   const filteredCourses = useMemo(() => {
     if (activeFilter === 'All') return COURSES;
     return COURSES.filter((course) => course.category === activeFilter);
   }, [activeFilter]);
+
+  useEffect(() => {
+    const categoryFromRoute = route.params?.category;
+    if (categoryFromRoute && FILTERS.includes(categoryFromRoute)) {
+      setActiveFilter(categoryFromRoute);
+    }
+  }, [route.params?.category]);
 
   const renderCourse = ({ item }) => (
     <View style={styles.courseCard}>
@@ -31,35 +44,55 @@ export default function CoursesScreen() {
           </View>
         </View>
       </View>
-      <TouchableOpacity style={styles.enrollBtn}>
-        <Text style={styles.enrollText}>Enroll</Text>
-      </TouchableOpacity>
+      <View style={styles.actionsCol}>
+        <TouchableOpacity
+          style={styles.bookmarkCircle}
+          onPress={() => toggleBookmark(item.id)}
+        >
+          <MaterialIcons
+            name={isBookmarked(item.id) ? 'bookmark' : 'bookmark-border'}
+            size={20}
+            color={isBookmarked(item.id) ? '#6C7BFF' : '#4a4e69'}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.enrollBtn}>
+          <Text style={styles.enrollText}>Enroll</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text style={styles.heading}>Explore curated courses</Text>
       <Text style={styles.subheading}>Build job-ready skills with mentor-led tracks.</Text>
 
-      <FlatList
-        data={FILTERS}
-        horizontal
-        keyExtractor={(filter) => filter}
-        showsHorizontalScrollIndicator={false}
-        style={{ marginVertical: 20 }}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            onPress={() => setActiveFilter(item)}
-            style={[
-              styles.filterChip,
-              activeFilter === item && { backgroundColor: '#6C7BFF' },
-            ]}
-          >
-            <Text style={[styles.filterText, activeFilter === item && { color: '#fff' }]}>{item}</Text>
-          </TouchableOpacity>
-        )}
-      />
+      <View style={styles.filterBar}>
+        <FlatList
+          data={FILTERS}
+          horizontal
+          keyExtractor={(filter) => filter}
+          showsHorizontalScrollIndicator={false}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              onPress={() => setActiveFilter(item)}
+              style={[
+                styles.filterChip,
+                activeFilter === item && styles.filterChipActive,
+              ]}
+            >
+              <Text
+                style={[
+                  styles.filterText,
+                  activeFilter === item && styles.filterTextActive,
+                ]}
+              >
+                {item}
+              </Text>
+            </TouchableOpacity>
+          )}
+        />
+      </View>
 
       <FlatList
         data={filteredCourses}
@@ -69,7 +102,7 @@ export default function CoursesScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 120 }}
       />
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -77,7 +110,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingTop: 30,
+    paddingTop: 26,
     paddingHorizontal: 18,
   },
   heading: {
@@ -86,24 +119,42 @@ const styles = StyleSheet.create({
   },
   subheading: {
     color: '#6c7383',
-    marginTop: 6,
+    marginTop: 8,
+  },
+  filterBar: {
+    marginTop: 18,
+    marginBottom: 14,
+    paddingVertical: 8,
+    borderRadius: 20,
+    backgroundColor: '#f6f7fb',
   },
   filterChip: {
-    paddingVertical: 10,
-    paddingHorizontal: 18,
-    borderRadius: 20,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 18,
     backgroundColor: '#f1f2f6',
-    marginRight: 10,
+    marginRight: 8,
   },
   filterText: {
     fontWeight: '600',
     color: '#434e68',
   },
+  filterChipActive: {
+    backgroundColor: '#6C7BFF',
+    shadowColor: '#6C7BFF',
+    shadowOpacity: 0.25,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 3 },
+    elevation: 2,
+  },
+  filterTextActive: {
+    color: '#fff',
+  },
   courseCard: {
     flexDirection: 'row',
     borderRadius: 18,
-    backgroundColor: '#f7f7fb',
-    padding: 14,
+    backgroundColor: '#f8f8ff',
+    padding: 16,
     alignItems: 'center',
   },
   thumbnail: {
@@ -142,12 +193,27 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#f29d3a',
   },
+  actionsCol: {
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
+    marginLeft: 10,
+  },
+  bookmarkCircle: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 8,
+    borderWidth: 1,
+    borderColor: '#e0d8ff',
+  },
   enrollBtn: {
     backgroundColor: '#fff',
     paddingVertical: 8,
     paddingHorizontal: 18,
     borderRadius: 20,
-    marginLeft: 10,
     borderWidth: 1,
     borderColor: '#e0d8ff',
   },
