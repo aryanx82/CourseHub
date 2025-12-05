@@ -6,13 +6,21 @@ export default function LoginScreen({ navigation }) {
   const { signIn } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!email || !password) {
       Alert.alert('Missing info', 'Please provide both email and password.');
       return;
     }
-    signIn({ email, name: 'Course Explorer' });
+    try {
+      setSubmitting(true);
+      await signIn({ email, password });
+    } catch (e) {
+      Alert.alert('Login failed', e.message || 'Unable to log in. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -36,8 +44,8 @@ export default function LoginScreen({ navigation }) {
         secureTextEntry
       />
 
-      <TouchableOpacity style={styles.primaryBtn} onPress={handleLogin}>
-        <Text style={styles.primaryText}>Log in</Text>
+      <TouchableOpacity style={styles.primaryBtn} onPress={handleLogin} disabled={submitting}>
+        <Text style={styles.primaryText}>{submitting ? 'Logging in...' : 'Log in'}</Text>
       </TouchableOpacity>
 
       <TouchableOpacity onPress={() => navigation.navigate('Signup')}>

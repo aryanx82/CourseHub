@@ -7,13 +7,21 @@ export default function SignupScreen({ navigation }) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleSignup = () => {
+  const handleSignup = async () => {
     if (!name || !email || !password) {
       Alert.alert('Missing info', 'Please provide name, email, and password.');
       return;
     }
-    signUp({ name, email });
+    try {
+      setSubmitting(true);
+      await signUp({ name, email, password });
+    } catch (e) {
+      Alert.alert('Signup failed', e.message || 'Unable to sign up. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -37,8 +45,8 @@ export default function SignupScreen({ navigation }) {
         secureTextEntry
       />
 
-      <TouchableOpacity style={styles.primaryBtn} onPress={handleSignup}>
-        <Text style={styles.primaryText}>Sign up</Text>
+      <TouchableOpacity style={styles.primaryBtn} onPress={handleSignup} disabled={submitting}>
+        <Text style={styles.primaryText}>{submitting ? 'Creating account...' : 'Sign up'}</Text>
       </TouchableOpacity>
 
       <TouchableOpacity onPress={() => navigation.goBack()}>
