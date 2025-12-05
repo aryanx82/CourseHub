@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useRoute } from '@react-navigation/native';
@@ -13,18 +13,36 @@ export default function CoursesScreen() {
   const { isBookmarked, toggleBookmark } = useBookmarks();
 
   const [activeFilter, setActiveFilter] = useState('All');
+  const [searchQuery, setSearchQuery] = useState('');
 
   const filteredCourses = useMemo(() => {
-    if (activeFilter === 'All') return COURSES;
-    return COURSES.filter((course) => course.category === activeFilter);
-  }, [activeFilter]);
+    const base = activeFilter === 'All'
+      ? COURSES
+      : COURSES.filter((course) => course.category === activeFilter);
+
+    if (!searchQuery.trim()) return base;
+
+    const q = searchQuery.trim().toLowerCase();
+    return base.filter((course) =>
+      course.title.toLowerCase().includes(q) ||
+      course.instructor.toLowerCase().includes(q)
+    );
+  }, [activeFilter, searchQuery]);
 
   useEffect(() => {
     const categoryFromRoute = route.params?.category;
+    const searchFromRoute = route.params?.search;
+
     if (categoryFromRoute && FILTERS.includes(categoryFromRoute)) {
       setActiveFilter(categoryFromRoute);
+      setSearchQuery('');
     }
-  }, [route.params?.category]);
+
+    if (searchFromRoute && typeof searchFromRoute === 'string') {
+      setActiveFilter('All');
+      setSearchQuery(searchFromRoute);
+    }
+  }, [route.params?.category, route.params?.search]);
 
   const renderCourse = ({ item }) => (
     <View style={styles.courseCard}>
@@ -66,6 +84,22 @@ export default function CoursesScreen() {
     <SafeAreaView style={styles.container}>
       <Text style={styles.heading}>Explore curated courses</Text>
       <Text style={styles.subheading}>Build job-ready skills with mentor-led tracks.</Text>
+
+      <View style={styles.searchRow}>
+        <TextInput
+          placeholder="Search by course or instructor"
+          style={styles.searchInput}
+          placeholderTextColor="#9ca3af"
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          returnKeyType="search"
+        />
+        {searchQuery.length > 0 && (
+          <TouchableOpacity onPress={() => setSearchQuery('')} style={styles.clearBtn}>
+            <Text style={styles.clearText}>Clear</Text>
+          </TouchableOpacity>
+        )}
+      </View>
 
       <View style={styles.filterBar}>
         <FlatList
@@ -120,6 +154,31 @@ const styles = StyleSheet.create({
   subheading: {
     color: '#6c7383',
     marginTop: 8,
+  },
+  searchRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 14,
+    marginBottom: 10,
+  },
+  searchInput: {
+    flex: 1,
+    height: 44,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+    paddingHorizontal: 12,
+    backgroundColor: '#f9fafb',
+  },
+  clearBtn: {
+    marginLeft: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+  },
+  clearText: {
+    color: '#6C7BFF',
+    fontSize: 12,
+    fontWeight: '600',
   },
   filterBar: {
     marginTop: 18,

@@ -1,13 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TextInput, TouchableOpacity, StatusBar } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 import CourseCard from '../components/CourseCard';
 import { FEATURED_COURSES } from '../data/courses';
 
 export default function HomeScreen() {
+  const navigation = useNavigation();
+  const [query, setQuery] = useState('');
+
+  const handleSearch = () => {
+    const trimmed = query.trim();
+    if (!trimmed) return;
+    navigation.navigate('Courses', { search: trimmed });
+    // optionally clear search after navigating
+    // setQuery('');
+  };
+
   const renderHeader = () => (
-    <>
       <LinearGradient
         colors={['#6C7BFF', '#7E4BB3']}
         style={styles.heroFullWidth}
@@ -36,8 +47,12 @@ export default function HomeScreen() {
               placeholder="What do you want to learn today?"
               style={styles.searchInput}
               placeholderTextColor="#666"
+              value={query}
+              onChangeText={setQuery}
+              returnKeyType="search"
+              onSubmitEditing={handleSearch}
             />
-            <TouchableOpacity style={styles.searchBtn}>
+            <TouchableOpacity style={styles.searchBtn} onPress={handleSearch}>
               <Ionicons name="search" size={18} color="#fff" />
             </TouchableOpacity>
           </View>
@@ -73,22 +88,22 @@ export default function HomeScreen() {
           </View>
         </View>
       </LinearGradient>
-
-      <View style={styles.sectionWrapper}>
-        <Text style={styles.sectionTitle}>Featured Courses</Text>
-      </View>
-    </>
   );
 
   return (
     <View style={{ flex: 1, backgroundColor: '#fff' }}>
       <StatusBar barStyle="light-content" />
 
+      {renderHeader()}
+
+      <View style={styles.sectionWrapper}>
+        <Text style={styles.sectionTitle}>Featured Courses</Text>
+      </View>
+
       <FlatList
         data={FEATURED_COURSES}
         renderItem={({ item }) => <CourseCard course={item} />}
         keyExtractor={(item) => item.id}
-        ListHeaderComponent={renderHeader}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
           paddingBottom: 100,
@@ -236,4 +251,3 @@ const styles = StyleSheet.create({
     textAlign: 'left',
   },
 });
-
